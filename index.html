@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Abdullah.io — Space Snake</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== MAIN MENU ===== -->
+  <div id="mainMenu" class="screen active">
+    <canvas id="menuBgCanvas"></canvas>
+
+    <div class="menu-content">
+      <div class="logo-wrap">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIFTZLBs5qdEskV2qt-oMOaWx5H8UDw2PgcA&s" alt="Logo" class="logo-img" />
+        <h1 class="logo-title">ABDULLAH<span class="dot">.io</span></h1>
+        <p class="logo-sub">SPACE SNAKE SURVIVAL</p>
+      </div>
+
+      <div class="menu-form">
+        <input type="text" id="usernameInput" class="username-input" placeholder="Enter your name…" maxlength="16" />
+        <button class="btn-play" id="btnPlay">
+          <span class="btn-glow"></span>
+          ▶ PLAY
+        </button>
+        <div class="menu-row">
+          <button class="btn-secondary" id="btnLeaderboard">🏆 Leaderboard</button>
+          <button class="btn-secondary" id="btnSettings">⚙ Settings</button>
+        </div>
+        <div class="toggle-row">
+          <label class="toggle-label">
+            <span>🔊 Sound</span>
+            <div class="toggle" id="toggleSound">
+              <div class="toggle-knob on"></div>
+            </div>
+          </label>
+          <label class="toggle-label">
+            <span>🎵 Music</span>
+            <div class="toggle" id="toggleMusic">
+              <div class="toggle-knob on"></div>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leaderboard Overlay -->
+    <div class="overlay-panel" id="leaderboardPanel">
+      <h2 class="panel-title">🏆 LEADERBOARD</h2>
+      <ol class="leaderboard-list" id="leaderboardList"></ol>
+      <button class="btn-close" onclick="closePanel('leaderboardPanel')">✕ Close</button>
+    </div>
+
+    <!-- Settings Overlay -->
+    <div class="overlay-panel" id="settingsPanel">
+      <h2 class="panel-title">⚙ SETTINGS</h2>
+      <div class="setting-row">
+        <span>Particles</span>
+        <select id="settingParticles" class="setting-select">
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <span>AI Snakes</span>
+        <select id="settingAI" class="setting-select">
+          <option value="15">15 (Intense)</option>
+          <option value="10" selected>10 (Normal)</option>
+          <option value="5">5 (Chill)</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <span>Skin</span>
+        <select id="settingSkin" class="setting-select">
+          <option value="0">Cosmic Blue</option>
+          <option value="1">Solar Flare</option>
+          <option value="2">Nebula Pink</option>
+          <option value="3">Toxic Green</option>
+          <option value="4">Royal Gold</option>
+        </select>
+      </div>
+      <button class="btn-close" onclick="closePanel('settingsPanel')">✕ Close</button>
+    </div>
+  </div>
+
+  <!-- ===== GAME SCREEN ===== -->
+  <div id="gameScreen" class="screen">
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- HUD -->
+    <div class="hud">
+      <div class="hud-score">
+        <div class="hud-label">SCORE</div>
+        <div class="hud-value" id="hudScore">0</div>
+      </div>
+      <div class="hud-kills">
+        <div class="hud-label">KILLS</div>
+        <div class="hud-value" id="hudKills">0</div>
+      </div>
+      <div class="hud-xp">
+        <div class="hud-label">LENGTH</div>
+        <div class="hud-value" id="hudLength">1</div>
+      </div>
+      <div class="hud-rank">
+        <div class="hud-label">RANK</div>
+        <div class="hud-value" id="hudRank">#1</div>
+      </div>
+    </div>
+
+    <!-- Boost Bar -->
+    <div class="boost-bar-wrap">
+      <div class="boost-label">BOOST</div>
+      <div class="boost-track">
+        <div class="boost-fill" id="boostFill"></div>
+      </div>
+    </div>
+
+    <!-- Minimap -->
+    <canvas id="minimap" class="minimap"></canvas>
+    <div class="minimap-label">MAP</div>
+
+    <!-- Top Leaderboard -->
+    <div class="live-board">
+      <div class="live-board-title">TOP SNAKES</div>
+      <ol class="live-board-list" id="liveBoardList"></ol>
+    </div>
+
+    <!-- Pause Button -->
+    <button class="btn-pause" id="btnPause">⏸</button>
+  </div>
+
+  <!-- ===== GAME OVER SCREEN ===== -->
+  <div id="gameOverScreen" class="screen">
+    <canvas id="menuBgCanvas2"></canvas>
+    <div class="gameover-content">
+      <h1 class="gameover-title">YOU DIED</h1>
+      <div class="gameover-stats">
+        <div class="stat-box">
+          <div class="stat-val" id="goScore">0</div>
+          <div class="stat-lbl">SCORE</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="goKills">0</div>
+          <div class="stat-lbl">KILLS</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="goLength">0</div>
+          <div class="stat-lbl">LENGTH</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="goRank">-</div>
+          <div class="stat-lbl">BEST RANK</div>
+        </div>
+      </div>
+      <button class="btn-play" id="btnRespawn">↺ RESPAWN</button>
+      <button class="btn-secondary" id="btnMenuReturn">⟵ MENU</button>
+    </div>
+  </div>
+
+  <!-- ===== PAUSE SCREEN ===== -->
+  <div id="pauseScreen" class="screen">
+    <div class="pause-content">
+      <h2 class="pause-title">⏸ PAUSED</h2>
+      <button class="btn-play" id="btnResume">▶ RESUME</button>
+      <button class="btn-secondary" id="btnPauseMenu">⟵ MAIN MENU</button>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer id="siteFooter">
+    <canvas id="footerCanvas"></canvas>
+    <div class="footer-content">
+      <div class="creator-card">
+        <div class="creator-avatar-wrap">
+          <img src="https://i.postimg.cc/fL0BNpf6/Untitled-design-(1).png" alt="Abdullah" class="creator-avatar" />
+          <div class="avatar-ring"></div>
+        </div>
+        <div class="creator-info">
+          <p class="creator-label">GAME DEVELOPER</p>
+          <h3 class="creator-name">Abdullah</h3>
+          <p class="creator-sub">Created by Abdullah</p>
+        </div>
+      </div>
+      <div class="footer-tagline">
+        <p>Built with ❤ &amp; ⚡ in the cosmos</p>
+        <p class="footer-copy">© 2025 Abdullah.io · All rights reserved</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
